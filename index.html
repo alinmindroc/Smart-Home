@@ -1,0 +1,39 @@
+<!doctype html>
+<html ng-app="todoApp">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
+  <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
+  <script src="todo.js"></script>
+  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body ng-controller="TodoListController as todoList">
+  <script type="text/ng-template" id="myModalContent.html">
+    <div class="modal-header">
+      <h3 class="modal-title">Im a modal!</h3>
+    </div>
+  </script>
+  <div class="leftContent">
+      <span>{{location|json}}</span>
+  </div>
+  <div style="position: relative">
+        <button ng-click = "functie()">request</button>
+
+    <img src="intelligent_house.png">
+    <button  uib-popover="{{comments[0]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(0)" style="position: absolute; top: 592px; left: 425px;">Geotermal heat pumps</button>
+    <button  uib-popover="{{comments[1]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(1)" style="position: absolute; top: 678px; left: 659px;">Boiler</button>
+    <button  uib-popover="{{comments[2]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(2)" style="position: absolute; top: 745px; left: 870px;">Water filter</button>
+    <button  uib-popover="{{comments[3]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(3)" style="position: absolute; top: 678px; left: 998px;">Battery storage</button>
+    <button  uib-popover="{{comments[4]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(4)" style="position: absolute; top: 604px; left: 1110px;">Appliances</button>
+    <button  uib-popover="{{comments[5]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(5)" style="position: absolute; top: 529px; left: 1295px;">Interior lighting</button>
+    <button  uib-popover="{{comments[6]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(6)" style="position: absolute; top: 173px; left: 1301px;">Wind turbine</button>
+    <button  uib-popover="{{comments[7]}}" popover-trigger="mouseenter" type="button" class="btn btn-default" ng-click="open(7)" style="position: absolute; top: 86px; left: 1148px;">Solar panel</button>
+  </div>
+
+</body>
+</html>
+<!-- 
+//todo: afisare locatie curenta, oras
+//pe baza orasului, ia date despre vreme, vant, nori -> API
+//ia date despre consum energie -> API -->

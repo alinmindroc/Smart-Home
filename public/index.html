@@ -1,0 +1,53 @@
+<!doctype html>
+<html ng-app="houseMonitoringApp">
+<head>
+  <title>Intelligent House</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
+  <script src="https://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"></script>
+  
+  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="stylesheets/style.css" rel="stylesheet">
+
+  <script src="javascripts/mainController.js"></script>
+  <script src="javascripts/ACController.js"></script>
+  <script src="javascripts/heatingController.js"></script>
+  <script src="javascripts/appliancesController.js"></script>
+  <script src="javascripts/lightingController.js"></script>
+  <script src="javascripts/windController.js"></script>
+  <script src="javascripts/solarController.js"></script>
+</head>
+<body ng-controller="mainController">
+  <div class="leftContent">
+    <div style="margin: 10px 10px">
+      <img title="{{weatherDescription}}" ng-src="http://openweathermap.org/img/w/{{weatherImage}}.png">
+      <span>{{location}} - {{weatherDescription}} - {{temperature}} &#8451</span>
+      <br>
+      <span>{{timeString}}</span>
+      <br>
+      <span>Wind speed: {{windSpeed}} m/s</span>
+      <br>
+      <span>{{sunrise}}</span>
+      <br>
+      <span>{{sunset}}</span>
+    </div>
+  </div>
+    <img src="images/intelligent_house.png">
+    <button type="button" class="btn btn-default" ng-click="openAcModal()" style="position: absolute; top: 592px; left: 425px;">Air conditioning</button>
+    <button type="button" class="btn btn-default" ng-click="openHeatingModal()" style="position: absolute; top: 678px; left: 659px;">Heating system</button>
+    <button type="button" class="btn btn-default" ng-click="openAppliancesModal()" style="position: absolute; top: 604px; left: 1110px;">Appliances</button>
+    <button type="button" class="btn btn-default" ng-click="openLightingModal()" style="position: absolute; top: 529px; left: 1295px;">Lighting</button>
+    <button type="button" class="btn btn-default" ng-click="openWindModal()" style="position: absolute; top: 173px; left: 1301px;">Wind turbine</button>
+    <button type="button" class="btn btn-default" ng-click="openSolarModal()" style="position: absolute; top: 86px; left: 1148px;">Solar panel</button>
+  </div>
+
+</body>
+</html>
+<!-- 
+//todo: afisare locatie curenta, oras
+//pe baza orasului, ia date despre vreme, vant, nori -> API
+//ia date despre consum energie -> API
+//actualizeaza datele la un interval
+//scoate imaginile nefolosite
+//actualizeaza vectoru comments
+//muta functiile care calculeaza puteri in servicii-->
