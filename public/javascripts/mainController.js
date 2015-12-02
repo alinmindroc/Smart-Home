@@ -1,10 +1,13 @@
 var app = angular.module('houseMonitoringApp', ['ngAnimate', 'ui.bootstrap']);
 app.controller('mainController', function($scope, $http, $uibModal, $interval) {
 
+  $scope.totalUsedPower = 0;
+  $scope.totalGeneratedPower = 0;
+
   function getWindPower(windSpeed){
     //return power in kiloWatts for a 250 KW turbine
     var generatedPower = 250;
-    return generatedPower * windSpeed / 6;
+    return (generatedPower * windSpeed / 6);
   }
 
   function getSolarPower(sunrise, sunset, cloudsPercentage){
@@ -12,43 +15,34 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
     var generatedPower = 200;
     var crt = new Date().getTime();
     if(sunrise < crt < sunset){
-      return generatedPower * cloudsPercentage;
+      return (generatedPower * cloudsPercentage);
     } else {
       return 0;
     }
   }
 
+  function getDateString(timeStamp){
+    var date = new Date(timeStamp);
+    var month = date.getMonth() + 1;//YAY JAVASCRIPT
+    var day = date.getDay();
 
-  $scope.items = ['item1', 'item2', 'item3'];
+    month = ("0" + month).substr(-2);
+    day = ("0" + day).substr(-2);
 
-  $scope.animationsEnabled = true;
-
-  $scope.comments = [
-  "geotermal",
-  "boiler",
-  "filter",
-  "battery",
-  "appliances",
-  "lighting",
-  "wind",
-  "solar"
-  ]
+    var formattedDate = day + '/' + month;
+    return formattedDate;
+  }
 
   function getTimeString(timeStamp){
-    // Create a new JavaScript Date object based on the timestamp
-    // multiplied by 1000 so that the argument is in milliseconds, not seconds.
     var date = new Date(timeStamp);
-    // Hours part from the timestamp
     var hours = date.getHours();
-    // Minutes part from the timestamp
     var minutes = "0" + date.getMinutes();
-    // Seconds part from the timestamp
     var seconds = "0" + date.getSeconds();
     
-    // Will display time in 10:30:23 format
     var formattedTime = hours + ':' + minutes.substr(-2);
     return formattedTime;
   }
+
 
   $scope.updateTime = function() {
     $scope.timeString = getTimeString(new Date().getTime());
@@ -59,13 +53,36 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
 
   $scope.updateTime();
 
-  $scope.getLocation = function(){
-    //get coordinates from browser
-    navigator.geolocation.getCurrentPosition($scope.showPosition);
+  function ftoc(degreesF){
+    return ((degreesF - 32) / 1.8).toFixed(2);
+  }
+
+  $scope.req = function(){
+    url = "https://api.forecast.io/forecast/48a7d2a43e04051f6db3bf29f00e5e44/" + $scope.locationCoords.lat + ',' + $scope.locationCoords.lon;
+    $http({
+      method: 'GET',
+      url: '/proxy?url=' + url
+    }).success(function(data){
+      var day1 = data.daily.data[0];
+      var day2 = data.daily.data[1];
+
+      $scope.forecast = [{}, {}];
+      $scope.forecast[0].time = getDateString(day1.time * 1000);
+      $scope.forecast[0].summary = day1.summary;
+      $scope.forecast[0].tempMax = ftoc(day1.temperatureMax);
+      $scope.forecast[0].tempMin = ftoc(day1.temperatureMin);
+
+      $scope.forecast[1].time = getDateString(day2.time * 1000);
+      $scope.forecast[1].summary = day2.summary;
+      $scope.forecast[1].tempMax = ftoc(day2.temperatureMax);
+      $scope.forecast[1].tempMin = ftoc(day2.temperatureMin);
+    });
   }
 
   $scope.showPosition = function(pos){
     $scope.locationCoords = {lat: pos.coords.latitude, lon: pos.coords.longitude};
+
+    $scope.req();
 
     //get data about weather from API
     $http({
@@ -81,14 +98,30 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
         $scope.sunrise = getTimeString(data.sys.sunrise * 1000);
         $scope.sunset = getTimeString(data.sys.sunset * 1000);
         $scope.weatherImage = data.weather[0].icon;
-        $scope.windPower = getWindPower($scope.windSpeed);
-        $scope.solarPower = getSolarPower(data.sys.sunrise * 1000, data.sys.sunset*1000, $scope.cloudsPercentage);
         $scope.cloudsPercentage = data.clouds.all;
+        var windPower = getWindPower($scope.windSpeed);
+        var solarPower = getSolarPower(data.sys.sunrise * 1000, data.sys.sunset * 1000, $scope.cloudsPercentage);
+
+        $scope.totalGeneratedPower = (windPower + solarPower).toFixed(2);
       })
   }
 
+  $scope.getLocation = function(){
+    //get coordinates from browser
+    navigator.geolocation.getCurrentPosition($scope.showPosition);
+  }
+
   $scope.getLocation();
-  
+
+  $scope.acPower = 0;
+  $scope.appliancesPower = 0;
+  $scope.heatingPower = 0;
+  $scope.lightingPower = 0;
+
+  function updateTotalUsedPower(){
+    $scope.totalUsedPower = $scope.acPower + $scope.appliancesPower + $scope.heatingPower + $scope.lightingPower;
+  }
+
   $scope.openHeatingModal = function(){
     var modalInstance = $uibModal.open({
       animation: $scope.animationsEnabled,
@@ -106,7 +139,9 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
 
     modalInstance.result.then(function (result) {
       $scope.heatingState = result.state;
-      $scope.heatingTemperature = result.temperature;        
+      $scope.heatingTemperature = result.temperature;
+      $scope.heatingPower = result.KW;
+      updateTotalUsedPower();        
     });
   }
 
@@ -127,7 +162,9 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
 
     modalInstance.result.then(function (result) {
       $scope.acState = result.state;
-      $scope.acTemperature = result.temperature;        
+      $scope.acTemperature = result.temperature;
+      $scope.acPower = result.KW; 
+      updateTotalUsedPower();              
     });
   };
 
@@ -144,7 +181,9 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
     });
 
     modalInstance.result.then(function (result) {
-      $scope.appliancesStates = result;
+      $scope.appliancesStates = result.states;
+      $scope.appliancesPower = result.KW;
+      updateTotalUsedPower();             
     });
   };
 
@@ -161,7 +200,9 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
     });
 
     modalInstance.result.then(function (result) {
-      $scope.lightingPlaces = result;
+      $scope.lightingPlaces = result.states;
+      $scope.lightingPower = result.KW;
+      updateTotalUsedPower();          
     });
   }
 

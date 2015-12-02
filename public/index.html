@@ -19,26 +19,53 @@
 </head>
 <body ng-controller="mainController">
   <div class="leftContent">
-    <div style="margin: 10px 10px">
-      <img title="{{weatherDescription}}" ng-src="http://openweathermap.org/img/w/{{weatherImage}}.png">
-      <span>{{location}} - {{weatherDescription}} - {{temperature}} &#8451</span>
-      <br>
-      <span>{{timeString}}</span>
-      <br>
-      <span>Wind speed: {{windSpeed}} m/s</span>
-      <br>
-      <span>{{sunrise}}</span>
-      <br>
-      <span>{{sunset}}</span>
+    <div style="margin: 40px 20px">
+      <div class="panel panel-default">
+        <div class="panel-heading"><h4>Overview</h4></div>
+        <div class="panel-body">
+          <h4 style="margin-right: 10px">{{location}}</h4>
+          <h4 style="float: right; margin-top: -30px">{{timeString}}</h4>
+        </div>
+
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div>
+              <h4><span class="label label-success">{{temperature}} &#8451</span>
+              <img ng-src="http://openweathermap.org/img/w/{{weatherImage}}.png">
+              <span class="label label-default">{{weatherDescription}}</span></h4>
+            </div>
+          </li>
+          <li class="list-group-item">
+            Total used power: <b>{{totalUsedPower}} KW</b>
+          </li>
+          <li class="list-group-item">
+            Total generated power: <b>{{totalGeneratedPower}} KW</b>
+          </li>
+        </ul>
+      </div>  
+      <div class="panel panel-default">
+        <div class="panel-heading"><h4>Forecast</h4></div>
+        <ul class="list-group">
+
+          <li class="list-group-item">
+            <h4>{{forecast[0].time}} - <span class="label label-default">{{forecast[0].summary}}</span></h4>
+            <h4><span class="label label-success">{{forecast[0].tempMin}} &#8451 to {{forecast[0].tempMax}} &#8451</span></h4>
+          </li>
+          <li class="list-group-item">
+            <h4>{{forecast[1].time}} - <span class="label label-default">{{forecast[1].summary}}</span></h4>
+            <h4><span class="label label-success">{{forecast[1].tempMin}} &#8451 to {{forecast[1].tempMax}} &#8451</span></h4>
+          </li>    
+          </ul>
+          </div>
     </div>
   </div>
     <img src="images/intelligent_house.png">
-    <button type="button" class="btn btn-default" ng-click="openAcModal()" style="position: absolute; top: 592px; left: 425px;">Air conditioning</button>
-    <button type="button" class="btn btn-default" ng-click="openHeatingModal()" style="position: absolute; top: 678px; left: 659px;">Heating system</button>
-    <button type="button" class="btn btn-default" ng-click="openAppliancesModal()" style="position: absolute; top: 604px; left: 1110px;">Appliances</button>
-    <button type="button" class="btn btn-default" ng-click="openLightingModal()" style="position: absolute; top: 529px; left: 1295px;">Lighting</button>
-    <button type="button" class="btn btn-default" ng-click="openWindModal()" style="position: absolute; top: 173px; left: 1301px;">Wind turbine</button>
-    <button type="button" class="btn btn-default" ng-click="openSolarModal()" style="position: absolute; top: 86px; left: 1148px;">Solar panel</button>
+    <button type="button" class="btn btn-danger" ng-click="openAcModal()" style="position: absolute; top: 592px; left: 565px;">Air conditioning</button>
+    <button type="button" class="btn btn-danger" ng-click="openHeatingModal()" style="position: absolute; top: 678px; left: 799px;">Heating system</button>
+    <button type="button" class="btn btn-danger" ng-click="openAppliancesModal()" style="position: absolute; top: 604px; left: 1250px;">Appliances</button>
+    <button type="button" class="btn btn-danger" ng-click="openLightingModal()" style="position: absolute; top: 529px; left: 1435px;">Lighting</button>
+    <button type="button" class="btn btn-danger" ng-click="openWindModal()" style="position: absolute; top: 173px; left: 1441px;">Wind turbine</button>
+    <button type="button" class="btn btn-danger" ng-click="openSolarModal()" style="position: absolute; top: 86px; left: 1288px;">Solar panel</button>
   </div>
 
 </body>
@@ -50,4 +77,8 @@
 //actualizeaza datele la un interval
 //scoate imaginile nefolosite
 //actualizeaza vectoru comments
-//muta functiile care calculeaza puteri in servicii-->
+//muta functiile care calculeaza puteri in servicii
+//scoate localhost:3000
+//descarca javascripturile 
+//updateaza periodic toate datele, nu doar ceasul
+-->
