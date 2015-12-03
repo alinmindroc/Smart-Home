@@ -15,7 +15,7 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
     var generatedPower = 200;
     var crt = new Date().getTime();
     if(sunrise < crt < sunset){
-      return (generatedPower * cloudsPercentage);
+      return (generatedPower * (100 - cloudsPercentage) / 100);
     } else {
       return 0;
     }
@@ -97,6 +97,8 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
         $scope.windSpeed = data.wind.speed;
         $scope.sunrise = getTimeString(data.sys.sunrise * 1000);
         $scope.sunset = getTimeString(data.sys.sunset * 1000);
+        $scope.sunriseVal = data.sys.sunrise;
+        $scope.sunsetVal = data.sys.sunset;
         $scope.weatherImage = data.weather[0].icon;
         $scope.cloudsPercentage = data.clouds.all;
         var windPower = getWindPower($scope.windSpeed);
@@ -225,6 +227,12 @@ app.controller('mainController', function($scope, $http, $uibModal, $interval) {
       templateUrl: "views/solarModal.html",
       controller: "solarController",
       resolve: {
+        sunriseVal: function(){
+          return $scope.sunriseVal;
+        },
+        sunsetVal: function(){
+          return $scope.sunsetVal;
+        },
         sunrise: function () {
           return $scope.sunrise;
         },
